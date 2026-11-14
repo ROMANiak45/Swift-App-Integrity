@@ -78,7 +78,7 @@ struct Engine: Sendable {
 
 extension JailbreakReport.Environment {
     /// The environment this process is running in.
-    static var current: JailbreakReport.Environment {
+    package static var current: JailbreakReport.Environment {
         #if targetEnvironment(simulator)
         return .simulator
         #else

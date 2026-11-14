@@ -18,6 +18,14 @@ public struct AttestationPayload: Sendable, Hashable {
     public let data: Data
     /// The SHA-256 digest of ``data``.
     public let digest: Data
+
+    /// Encodes the value as JSON with sorted keys, so the same value always gives the same bytes.
+    package init(encoding value: some Encodable) throws {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys]
+        data = try encoder.encode(value)
+        digest = Data(SHA256.hash(data: data))
+    }
 }
 
 extension JailbreakReport {
@@ -32,9 +40,6 @@ extension JailbreakReport {
     /// Throws ``AttestationError/missingNonce`` if the evaluation was not given a nonce.
     public func attestationPayload() throws -> AttestationPayload {
         guard nonce != nil else { throw AttestationError.missingNonce }
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = [.sortedKeys]
-        let data = try encoder.encode(self)
-        return AttestationPayload(data: data, digest: Data(SHA256.hash(data: data)))
+        return try AttestationPayload(encoding: self)
     }
 }

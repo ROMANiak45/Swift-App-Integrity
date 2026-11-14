@@ -14,6 +14,7 @@ let package = Package(
     products: [
         .library(name: "JailbreakDetector", targets: ["JailbreakDetector"]),
         .library(name: "JailbreakDetectorHardening", targets: ["JailbreakDetectorHardening"]),
+        .library(name: "SessionIntegrity", targets: ["SessionIntegrity"]),
     ],
     targets: [
         .target(
@@ -25,6 +26,11 @@ let package = Package(
             name: "JailbreakDetectorHardening",
             dependencies: ["JailbreakDetector", "CJailbreakProbes"]
         ),
+        .target(
+            name: "SessionIntegrity",
+            dependencies: ["JailbreakDetector"],
+            resources: [.process("Resources/PrivacyInfo.xcprivacy")]
+        ),
         .testTarget(
             name: "JailbreakDetectorTests",
             dependencies: ["JailbreakDetector"]
@@ -32,6 +38,10 @@ let package = Package(
         .testTarget(
             name: "JailbreakDetectorHardeningTests",
             dependencies: ["JailbreakDetector", "JailbreakDetectorHardening", "CJailbreakProbes"]
+        ),
+        .testTarget(
+            name: "SessionIntegrityTests",
+            dependencies: ["JailbreakDetector", "SessionIntegrity"]
         ),
     ],
     swiftLanguageModes: [.v6]
